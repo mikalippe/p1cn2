@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: ecommerce-azure
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+```
+
+### Passo 2 — Adicionar o `gunicorn` no requirements.txt
+Abra o `requirements.txt` e adicione na última linha:
+```
+flask==3.0.3
+azure-storage-blob==12.22.0
+azure-data-tables==12.5.0
+gunicorn==21.2.0
