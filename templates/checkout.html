@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Checkout — AzureShop{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-cart3"></i> Finalizar Pedido</h5>
+      </div>
+      <div class="card-body">
+        <form method="POST">
+          <div class="mb-3">
+            <label class="form-label">Cliente *</label>
+            <select name="cliente_id" class="form-select" required>
+              <option value="">Selecione o cliente...</option>
+              {% for c in felipeclies %}
+              <option value="{{ c.RowKey }}">{{ c.Nome }} — {{ c.Email }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Produto *</label>
+            <select name="produto_id" class="form-select" required id="selProduto"
+                    onchange="atualizarPreco(this)">
+              <option value="">Selecione o produto...</option>
+              {% for p in felipeprods %}
+              <option value="{{ p.RowKey }}"
+                      data-preco="{{ p.Valor }}"
+                      data-estoque="{{ p.Quantidade }}">
+                {{ p.Marca }} {{ p.Modelo }} — R$ {{ "%.2f"|format(p.Valor) }} (estoque: {{ p.Quantidade }})
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Quantidade *</label>
+            <input name="quantidade" id="inputQtd" type="number" min="1" class="form-control"
+                   required value="1" oninput="calcTotal()">
+            <div id="estoqueInfo" class="form-text text-muted"></div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Total estimado</label>
+            <div class="form-control bg-light fw-bold text-success" id="totalDisplay">R$ 0,00</div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Método de Pagamento *</label>
+              <select name="pagamento" class="form-select" required>
+                <option value="Cartão de Crédito">Cartão de Crédito</option>
+                <option value="Cartão de Débito">Cartão de Débito</option>
+                <option value="Pix">Pix</option>
+                <option value="Boleto">Boleto Bancário</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Método de Entrega *</label>
+              <select name="entrega" class="form-select" required>
+                <option value="PAC">PAC — Econômico</option>
+                <option value="SEDEX">SEDEX — Expresso</option>
+                <option value="Retirada na Loja">Retirada na Loja</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-azure w-100 btn-lg">
+            <i class="bi bi-check-circle"></i> Confirmar Pedido
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let precoUnit = 0, estoqueMax = 0;
+function atualizarPreco(sel) {
+  const opt = sel.options[sel.selectedIndex];
+  precoUnit  = parseFloat(opt.dataset.preco  || 0);
+  estoqueMax = parseInt(opt.dataset.estoque || 0);
+  document.getElementById("estoqueInfo").textContent =
+    precoUnit ? `Estoque disponível: ${estoqueMax} unidades` : "";
+  document.getElementById("inputQtd").max = estoqueMax;
+  calcTotal();
+}
+function calcTotal() {
+  const qtd   = parseInt(document.getElementById("inputQtd").value) || 0;
+  const total = (precoUnit * qtd).toFixed(2).replace(".", ",");
+  document.getElementById("totalDisplay").textContent = `R$ ${total}`;
+}
+</script>
+{% endblock %}

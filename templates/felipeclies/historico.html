@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Histórico — {{ felipeclie.Nome }}{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center gap-3 mb-4">
+  <a href="/felipeclies" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Voltar</a>
+  <h4 class="fw-bold mb-0"><i class="bi bi-clock-history text-primary"></i> Histórico de {{ felipeclie.Nome }}</h4>
+</div>
+<div class="card">
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0">
+      <thead class="table-light">
+        <tr><th>Data</th><th>Produto</th><th>Qtd</th><th>Total</th><th>Pagamento</th><th>Entrega</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        {% for p in felipepedis %}
+        <tr>
+          <td>{{ p.CriadoEm[:10] }}</td>
+          <td>{{ p.ProdutoNome }}</td>
+          <td>{{ p.Quantidade }}</td>
+          <td>R$ {{ "%.2f"|format(p.Total) }}</td>
+          <td>{{ p.Pagamento }}</td>
+          <td>{{ p.Entrega }}</td>
+          <td><span class="badge bg-success">{{ p.Status }}</span></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" class="text-center text-muted py-4">Nenhum pedido encontrado.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
